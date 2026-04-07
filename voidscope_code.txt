@@ -1,0 +1,1860 @@
+﻿--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\globals.css ---
+
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0e0e0f;
+  --color-surface: #0e0e0f;
+  --color-surface-container-low: #131314;
+  --color-surface-container: #1a191b;
+  --color-surface-container-high: #201f21;
+  --color-surface-container-highest: #262627;
+  --color-surface-bright: #2c2c2d;
+
+  --color-primary: #8ff5ff;
+  --color-primary-dim: #00deec;
+  --color-primary-container: #00eefc;
+  --color-secondary: #00dcfc;
+  --color-secondary-dim: #00cdeb;
+  --color-tertiary: #65afff;
+
+  --color-on-surface: #ffffff;
+  --color-on-surface-variant: #adaaab;
+  --color-on-primary: #005d63;
+  --color-on-secondary: #004955;
+  --color-outline: #767576;
+  --color-outline-variant: #484849;
+
+  --font-sans: "Inter", sans-serif;
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-full: 0.75rem;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background-color: color-mix(in srgb, var(--color-surface-container-high) 60%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
+  }
+
+  .glass-edge {
+    border: 1px solid color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
+  }
+
+  .nebula-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: var(--color-primary-container);
+    filter: blur(120px);
+    opacity: 0.05;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+  }
+
+  .text-glow-primary {
+    text-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 40%, transparent);
+  }
+
+  .btn-primary-glow:hover {
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  }
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\layout.tsx ---
+
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Providers from "@/components/layout/Providers";
+import Navbar from "@/components/layout/Navbar";
+
+const inter = Inter({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+export const metadata: Metadata = {
+  title: "Voidscope - Your Movie Watchlist Companion",
+  description: "Explore the cosmos of cinema.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} antialiased`}>
+        <Providers>
+          <Navbar />
+          <main className="pt-16">
+            {children}
+          </main>
+        </Providers>
+      </body>
+    </html>
+  );
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\page.module.css ---
+
+.page {
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-family: var(--font-geist-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  grid-row-start: 2;
+}
+
+.main ol {
+  font-family: var(--font-geist-mono);
+  padding-left: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  list-style-position: inside;
+}
+
+.main li:not(:last-of-type) {
+  margin-bottom: 8px;
+}
+
+.main code {
+  font-family: inherit;
+  background: var(--gray-alpha-100);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.ctas {
+  display: flex;
+  gap: 16px;
+}
+
+.ctas a {
+  appearance: none;
+  border-radius: 128px;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+a.primary {
+  background: var(--foreground);
+  color: var(--background);
+  gap: 8px;
+}
+
+a.secondary {
+  border-color: var(--gray-alpha-200);
+  min-width: 158px;
+}
+
+.footer {
+  grid-row-start: 3;
+  display: flex;
+  gap: 24px;
+}
+
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer img {
+  flex-shrink: 0;
+}
+
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  a.primary:hover {
+    background: var(--button-primary-hover);
+    border-color: transparent;
+  }
+
+  a.secondary:hover {
+    background: var(--button-secondary-hover);
+    border-color: transparent;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 32px;
+    padding-bottom: 80px;
+  }
+
+  .main {
+    align-items: center;
+  }
+
+  .main ol {
+    text-align: center;
+  }
+
+  .ctas {
+    flex-direction: column;
+  }
+
+  .ctas a {
+    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  a.secondary {
+    min-width: auto;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: invert();
+  }
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\page.tsx ---
+
+import { getTrending } from "@/lib/tmdb";
+import { getImageUrl } from "@/lib/tmdb";
+import MovieGrid from "@/components/ui/MovieGrid";
+import Link from "next/link";
+import type { Movie } from "@/types/movie";
+import WatchlistBtn from "@/components/ui/WatchlistBtn";
+
+export default async function Home() {
+  const trending = await getTrending();
+  const featured: Movie = trending[0];
+  const rest: Movie[] = trending.slice(1);
+
+  return (
+    <div className="relative min-h-screen">
+      {/* Nebula Glows */}
+      <div className="nebula-glow fixed top-20 -left-40" />
+      <div className="nebula-glow fixed bottom-40 -right-40" />
+
+      {/* Hero Section */}
+      <section className="relative h-[85vh] flex items-end">
+        {/* Backdrop */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={getImageUrl(featured.backdrop_path, "original")}
+            alt={featured.title || featured.name || ""}
+            className="w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e0f] via-[#0e0e0f]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0e0e0f]/80 via-transparent to-transparent" />
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-8 pb-16 w-full">
+          <div className="max-w-2xl space-y-6">
+            {/* Label */}
+            <div className="flex gap-4 items-center">
+              <span className="glass-edge text-primary tracking-[0.2em] text-[10px] font-bold uppercase py-1 px-3 bg-surface-container-high/40 backdrop-blur-md rounded-sm">
+                FEATURED PULSE
+              </span>
+              <span className="text-on-surface-variant tracking-[0.1em] text-[10px] uppercase">
+                {featured.media_type === "tv" ? "TV Series" : "Feature Film"}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-on-surface">
+              {(featured.title || featured.name || "").toUpperCase()}
+            </h1>
+
+            {/* Overview */}
+            <p className="text-on-surface-variant text-lg font-light leading-relaxed max-w-xl">
+              {featured.overview.slice(0, 150)}...
+            </p>
+
+            {/* Rating */}
+            <div className="flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#8ff5ff" stroke="none">
+                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+              </svg>
+              <span className="text-primary font-bold text-xl">
+                {featured.vote_average.toFixed(1)}
+              </span>
+              <span className="text-on-surface-variant text-sm">/ 10</span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-4 pt-2">
+              <Link
+                href={`/${featured.media_type || "movie"}/${featured.id}`}
+                className="bg-primary text-on-primary px-10 py-3 rounded-sm font-bold tracking-[0.05em] uppercase text-sm hover:shadow-[0_0_20px_rgba(143,245,255,0.3)] transition-all active:scale-95"
+              >
+                View Details
+              </Link>
+<WatchlistBtn movie={featured} />
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trending Section */}
+      <section className="relative z-10 max-w-7xl mx-auto px-8 py-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <p className="text-[10px] tracking-[0.2em] text-on-surface-variant uppercase mb-1">
+              Technical Scan
+            </p>
+            <h2 className="text-2xl font-black tracking-tight text-on-surface">
+              Trending Destinations
+            </h2>
+          </div>
+          <Link
+            href="/search"
+            className="text-[10px] tracking-[0.15em] text-primary uppercase hover:text-primary-dim transition-colors"
+          >
+            View All â†’
+          </Link>
+        </div>
+
+        <MovieGrid movies={rest} />
+      </section>
+    </div>
+  );
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\api\search\route.ts ---
+
+import { NextRequest, NextResponse } from 'next/server'
+import { searchMovies } from '@/lib/tmdb'
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const query = searchParams.get('q') ?? ''
+  const page = Number(searchParams.get('page') ?? '1')
+  const genreId = searchParams.get('genre') ?? ''
+  const year = searchParams.get('year') ?? ''
+  const sort = searchParams.get('sort') ?? 'popularity.desc'
+  const rating = searchParams.get('rating') ?? ''
+
+  try {
+    const results = await searchMovies(query, page, { genreId, year, sort, rating })
+    return NextResponse.json(results)
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
+  }
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\movie\[id]\error.tsx ---
+
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\movie\[id]\loading.tsx ---
+
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\movie\[id]\page.tsx ---
+
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\search\error.tsx ---
+
+'use client'
+
+interface ErrorProps {
+  error: Error
+  reset: () => void
+}
+
+export default function SearchError({ error, reset }: ErrorProps) {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#0e0e0f] text-center">
+      <p className="text-xs uppercase tracking-[0.1em] text-[#8ff5ff]">
+        Signal Lost
+      </p>
+      <p className="mt-2 text-sm text-[#484849]">{error.message}</p>
+      <button
+        onClick={reset}
+        className="mt-8 rounded border border-[#484849]/15 bg-[#131314] px-6 py-2.5 text-xs uppercase tracking-[0.08em] text-white hover:border-[#8ff5ff]/30 hover:text-[#8ff5ff] transition-all"
+      >
+        Retry Scan
+      </button>
+    </main>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\search\loading.tsx ---
+
+export default function SearchLoading() {
+  return (
+    <main className="min-h-screen bg-[#0e0e0f] px-6 py-10 md:px-12 lg:px-24">
+
+      {/* SearchBar skeleton */}
+      <div className="mb-8 h-14 animate-pulse rounded bg-[#131314]" />
+
+      {/* FilterBar skeleton */}
+      <div className="mb-10 flex gap-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-8 w-24 animate-pulse rounded bg-[#131314]" />
+        ))}
+      </div>
+
+      {/* Grid skeleton */}
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="aspect-[2/3] animate-pulse rounded bg-[#201f21]" />
+        ))}
+      </div>
+
+    </main>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\search\page.tsx ---
+
+import { Suspense } from 'react'
+import SearchBar from '@/components/ui/SearchBar'
+import FilterBar from '@/components/ui/FilterBar'
+import SearchResults from '@/components/ui/SearchResults'
+import { searchMovies, getGenres } from '@/lib/tmdb'
+
+interface SearchPageProps {
+  searchParams: Promise<{
+    q?: string
+    genre?: string
+    year?: string
+    rating?: string
+    sort?: string
+  }>
+}
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const params = await searchParams
+
+  const query = params.q ?? ''
+  const genreId = params.genre ?? ''
+  const year = params.year ?? ''
+  const rating = params.rating ?? ''
+  const sort = params.sort ?? 'popularity.desc'
+
+  const [genres, initialResults] = await Promise.all([
+    getGenres(),
+    searchMovies(query, 1, { genreId, year, sort, rating }),
+  ])
+
+  return (
+    <main className="min-h-screen bg-[#0e0e0f] px-6 py-10 md:px-12 lg:px-24">
+      <section className="mb-8">
+        <SearchBar initialQuery={query} />
+      </section>
+
+      <section className="mb-10">
+        <FilterBar
+          genres={genres}
+          activeGenre={genreId}
+          activeYear={year}
+          activeRating={rating}
+          activeSort={sort}
+        />
+      </section>
+
+      <Suspense fallback={<SearchResultsSkeleton />}>
+        <SearchResults
+          initialResults={initialResults}
+          query={query}
+          genreId={genreId}
+          year={year}
+          rating={rating}
+          sort={sort}
+        />
+      </Suspense>
+    </main>
+  )
+}
+
+function SearchResultsSkeleton() {
+  return (
+    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="aspect-[2/3] animate-pulse rounded bg-[#201f21]" />
+      ))}
+    </div>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\watchlist\error.tsx ---
+
+'use client'
+
+export default function WatchlistError({ reset }: { reset: () => void }) {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center bg-[#0e0e0f] text-center">
+      <p className="text-xs uppercase tracking-[0.1em] text-[#8ff5ff]">
+        Signal Lost
+      </p>
+      <p className="mt-2 text-sm text-[#484849]">
+        Something went wrong
+      </p>
+      <button
+        onClick={reset}
+        className="mt-8 rounded border border-[#484849]/15 bg-[#131314] px-6 py-2.5 text-xs uppercase tracking-[0.08em] text-white transition-all hover:border-[#8ff5ff]/30 hover:text-[#8ff5ff]"
+      >
+        Retry
+      </button>
+    </main>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\watchlist\loading.tsx ---
+
+export default function WatchlistLoading() {
+  return (
+    <main className="min-h-screen bg-[#0e0e0f] px-8 py-16 md:px-12 lg:px-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-10 space-y-3">
+          <div className="h-16 w-64 animate-pulse rounded bg-[#201f21]" />
+          <div className="h-4 w-32 animate-pulse rounded bg-[#131314]" />
+        </div>
+        <div className="mb-10 flex gap-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-8 w-20 animate-pulse rounded bg-[#131314]" />
+          ))}
+        </div>
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="aspect-[2/3] animate-pulse rounded bg-[#201f21]" />
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\app\watchlist\page.tsx ---
+
+import WatchlistClient from '@/components/ui/WatchlistClient'
+
+export default function WatchlistPage() {
+  return (
+    <main className="min-h-screen bg-[#0e0e0f] px-8 py-16 md:px-12 lg:px-24">
+      <WatchlistClient />
+    </main>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\layout\Navbar.tsx ---
+
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useWatchlist } from "@/hooks/useWatchlist";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/search", label: "Search" },
+  { href: "/watchlist", label: "Watchlist" },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const { count } = useWatchlist();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <>
+      <nav
+        className="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-white/10 h-16 flex items-center px-8 justify-between"
+        style={{ backgroundColor: "color-mix(in srgb, #0a0a0b 60%, transparent)" }}
+      >
+        {/* Logo */}
+        <Link
+          href="/"
+          className="text-xl font-black tracking-tighter text-primary uppercase"
+        >
+          VOIDSCOPE
+        </Link>
+
+        {/* Nav Links â€” desktop */}
+        <div className="hidden md:flex gap-8 items-center">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "text-sm tracking-wide transition-colors duration-200 uppercase",
+                pathname === link.href
+                  ? "text-primary"
+                  : "text-on-surface-variant hover:text-on-surface"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Right Side */}
+        <div className="flex items-center gap-4">
+          {count > 0 && (
+            <Link href="/watchlist" className="flex items-center gap-2">
+              <span className="text-xs font-bold text-on-primary bg-primary rounded-sm px-2 py-0.5">
+                {count}
+              </span>
+            </Link>
+          )}
+
+          {/* User icon â€” desktop only */}
+          <div className="hidden md:flex w-8 h-8 rounded-full border border-outline-variant items-center justify-center cursor-pointer hover:border-primary transition-colors">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+
+          {/* Hamburger â€” mobile only */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            className="md:hidden flex flex-col gap-1.5 p-1"
+          >
+            <span className={cn(
+              "block h-px w-6 bg-white transition-all duration-300",
+              menuOpen && "translate-y-2 rotate-45"
+            )} />
+            <span className={cn(
+              "block h-px w-6 bg-white transition-all duration-300",
+              menuOpen && "opacity-0"
+            )} />
+            <span className={cn(
+              "block h-px w-6 bg-white transition-all duration-300",
+              menuOpen && "-translate-y-2 -rotate-45"
+            )} />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div
+          className="fixed top-16 left-0 w-full z-40 border-b border-white/10 backdrop-blur-xl md:hidden"
+          style={{ backgroundColor: "color-mix(in srgb, #0a0a0b 90%, transparent)" }}
+        >
+          <div className="flex flex-col px-8 py-4 gap-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={cn(
+                  "text-sm tracking-[0.1em] uppercase py-2 border-b border-white/5 transition-colors",
+                  pathname === link.href
+                    ? "text-primary"
+                    : "text-on-surface-variant hover:text-white"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\layout\Providers.tsx ---
+
+"use client";
+
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+
+export default function Providers({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\FilterBar.tsx ---
+
+'use client'
+
+import { useRouter, useSearchParams } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import type { Genre } from '@/types/movie'
+
+interface FilterBarProps {
+  genres: Genre[]
+  activeGenre: string
+  activeYear: string
+  activeRating: string
+  activeSort: string
+}
+
+const YEARS = ['2024', '2023', '2022', '2021', '2020']
+const RATINGS = ['9.0+', '8.0+', '7.0+', '6.0+']
+const SORT_OPTIONS = [
+  { label: 'Trending', value: 'popularity.desc' },
+  { label: 'Top Rated', value: 'vote_average.desc' },
+  { label: 'Newest', value: 'release_date.desc' },
+  { label: 'Oldest', value: 'release_date.asc' },
+]
+
+export default function FilterBar({
+  genres,
+  activeGenre,
+  activeYear,
+  activeRating,
+  activeSort,
+}: FilterBarProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  function updateParam(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (params.get(key) === value) {
+      params.delete(key)
+    } else {
+      params.set(key, value)
+    }
+
+    router.replace(`/search?${params.toString()}`)
+  }
+
+  return (
+    <div
+      role="group"
+      aria-label="Search filters"
+      className="flex flex-wrap items-center gap-2"
+    >
+
+      {/* Genre chips */}
+      {genres.slice(0, 6).map((genre) => (
+        <FilterChip
+          key={genre.id}
+          label={`Genre: ${genre.name}`}
+          active={activeGenre === String(genre.id)}
+          onClick={() => updateParam('genre', String(genre.id))}
+        />
+      ))}
+
+      {/* Year chips */}
+      {YEARS.map((year) => (
+        <FilterChip
+          key={year}
+          label={`Year: ${year}`}
+          active={activeYear === year}
+          onClick={() => updateParam('year', year)}
+        />
+      ))}
+
+      {/* Rating chips */}
+      {RATINGS.map((rating) => (
+        <FilterChip
+          key={rating}
+          label={`Rating: ${rating}`}
+          active={activeRating === rating}
+          onClick={() => updateParam('rating', rating)}
+        />
+      ))}
+
+      {/* Sort select */}
+      <div className="relative ml-auto">
+        <select
+          aria-label="Sort results"
+          value={activeSort}
+          onChange={(e) => updateParam('sort', e.target.value)}
+          className={cn(
+            'appearance-none rounded bg-[#131314] py-2 pl-4 pr-8',
+            'text-xs uppercase tracking-[0.08em] text-[#8ff5ff]',
+            'border border-[#484849]/15',
+            'focus:outline-none focus:border-[#8ff5ff]',
+            'cursor-pointer transition-colors',
+          )}
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              Sort: {opt.label}
+            </option>
+          ))}
+        </select>
+
+        {/* Chevron */}
+        <svg
+          className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[#8ff5ff]"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+
+    </div>
+  )
+}
+
+interface FilterChipProps {
+  label: string
+  active: boolean
+  onClick: () => void
+}
+
+function FilterChip({ label, active, onClick }: FilterChipProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        'rounded px-3 py-1.5',
+        'text-xs uppercase tracking-[0.08em]',
+        'border transition-all duration-150',
+        active
+          ? 'border-[#00dcfc] bg-[#00dcfc]/10 text-[#00dcfc]'
+          : 'border-[#484849]/15 bg-transparent text-[#484849] hover:border-[#484849]/40 hover:text-white',
+      )}
+    >
+      {label}
+    </button>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\MovieCard.tsx ---
+
+import Link from 'next/link'
+import { getImageUrl } from '@/lib/tmdb'
+import type { Movie } from '@/types/movie'
+
+interface MovieCardProps {
+  movie: Movie
+}
+
+export default function MovieCard({ movie }: MovieCardProps) {
+  const poster = getImageUrl(movie.poster_path, 'w500')
+  const title = movie.title || movie.name || ''
+  const mediaType = movie.media_type || 'movie'
+
+  return (
+    <Link
+      href={`/movie/${movie.id}`}
+      aria-label={`View ${title}`}
+      className="group relative overflow-hidden rounded border border-[#484849]/10 bg-[#131314] block"
+    >
+      {/* Poster */}
+      <div className="aspect-[2/3] overflow-hidden">
+        <img
+          src={poster}
+          alt={title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+
+      {/* Overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0e0e0f] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Info */}
+      <div className="p-3">
+        <div className="mb-1 flex items-center justify-between">
+          <span className="text-[9px] uppercase tracking-[0.15em] text-[#8ff5ff]">
+            {mediaType === 'tv' ? 'Series' : 'Film'}
+          </span>
+          <div className="flex items-center gap-1">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="#8ff5ff" aria-hidden="true">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+            </svg>
+            <span className="text-[10px] text-white">
+              {movie.vote_average.toFixed(1)}
+            </span>
+          </div>
+        </div>
+        <p className="text-sm font-bold uppercase tracking-tight text-white truncate">
+          {title}
+        </p>
+      </div>
+    </Link>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\MovieGrid.tsx ---
+
+import MovieCard from "./MovieCard";
+import type { Movie } from "@/types/movie";
+
+interface MovieGridProps {
+  movies: Movie[];
+  className?: string;
+}
+
+export default function MovieGrid({ movies, className }: MovieGridProps) {
+  if (!movies.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <p className="text-on-surface-variant tracking-[0.1em] uppercase text-sm">
+          No results found
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ${className}`}
+    >
+      {movies.map((movie) => (
+        <MovieCard key={movie.id} movie={movie} />
+      ))}
+    </div>
+  );
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\SearchBar.tsx ---
+
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { useRef, useTransition } from "react";
+import { cn } from "@/lib/utils";
+
+interface SearchBarProps {
+  initialQuery?: string;
+}
+
+export default function SearchBar({ initialQuery = "" }: SearchBarProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value) {
+      params.set("q", value);
+    } else {
+      params.delete("q");
+    }
+
+    startTransition(() => {
+      router.replace(`/search?${params.toString()}`);
+    });
+  }
+
+  return (
+    <div className="relative w-full">
+      {/* Search Icon */}
+      <svg
+        className="absolute left-5 top-1/2 -translate-y-1/2 text-[#484849]"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" />
+      </svg>
+
+      <input
+        ref={inputRef}
+        type="search"
+        role="searchbox"
+        aria-label="Search movies and TV shows"
+        placeholder="Pulse search the nebula..."
+        defaultValue={initialQuery}
+        onChange={handleChange}
+        className={cn(
+          "w-full rounded bg-[#131314] py-4 pl-14 pr-6",
+          "text-base text-white placeholder:text-[#484849]",
+          "border border-transparent",
+          "transition-all duration-200",
+          "focus:outline-none focus:border-b-2 focus:border-[#8ff5ff]",
+          "focus:[box-shadow:0_0_8px_rgba(143,245,255,0.15)]",
+          isPending && "opacity-70",
+        )}
+      />
+
+      {isPending && (
+        <span
+          aria-live="polite"
+          className="absolute right-5 top-1/2 -translate-y-1/2 text-xs uppercase tracking-widest text-[#8ff5ff]"
+        >
+          Scanning...
+        </span>
+      )}
+    </div>
+  );
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\SearchResults.tsx ---
+
+'use client'
+
+import { useInfiniteQuery } from '@tanstack/react-query'
+import MovieGrid from '@/components/ui/MovieGrid'
+import type { Movie } from '@/types/movie'
+
+interface SearchResultsProps {
+  initialResults: Movie[]
+  query: string
+  genreId: string
+  year: string
+  rating: string
+  sort: string
+}
+
+export default function SearchResults({
+  initialResults,
+  query,
+  genreId,
+  year,
+  rating,
+  sort,
+}: SearchResultsProps) {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ['search', query, genreId, year, rating, sort],
+      queryFn: async ({ pageParam = 1 }) => {
+        const params = new URLSearchParams()
+        if (query) params.set('q', query)
+        if (genreId) params.set('genre', genreId)
+        if (year) params.set('year', year)
+        if (sort) params.set('sort', sort)
+        if (rating) params.set('rating', rating)
+        params.set('page', String(pageParam))
+
+        const res = await fetch(`/api/search?${params.toString()}`)
+        const data = await res.json()
+        return data as Movie[]
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, pages) =>
+        lastPage.length > 0 ? pages.length + 1 : undefined,
+      placeholderData: { pages: [initialResults], pageParams: [1] },
+    })
+
+  const movies = data?.pages.flat() ?? []
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="aspect-[2/3] animate-pulse rounded bg-[#201f21]" />
+        ))}
+      </div>
+    )
+  }
+
+  if (movies.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-center">
+        <p className="text-xs uppercase tracking-[0.1em] text-[#484849]">
+          No Signal Detected
+        </p>
+        <p className="mt-2 text-sm text-[#484849]/60">
+          Try adjusting your scan parameters
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <section aria-label="Search results">
+      <MovieGrid movies={movies} />
+
+      {hasNextPage && (
+        <div className="mt-12 flex justify-center">
+          <button
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="flex items-center gap-3 rounded border border-[#484849]/15 bg-[#131314] px-8 py-3 text-xs uppercase tracking-[0.1em] text-white transition-all hover:border-[#8ff5ff]/30 hover:text-[#8ff5ff] disabled:opacity-50"
+          >
+            {isFetchingNextPage ? 'Scanning...' : 'Scan Deeper'}
+            {!isFetchingNextPage && (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <polyline points="7 13 12 18 17 13" />
+                <polyline points="7 6 12 11 17 6" />
+              </svg>
+            )}
+          </button>
+        </div>
+      )}
+    </section>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\WatchlistBtn.tsx ---
+
+'use client'
+
+import { useWatchlist } from '@/hooks/useWatchlist'
+import { cn } from '@/lib/utils'
+import type { Movie } from '@/types/movie'
+
+interface WatchlistBtnProps {
+  movie: Movie
+}
+
+export default function WatchlistBtn({ movie }: WatchlistBtnProps) {
+  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist()
+  const saved = isInWatchlist(movie.id)
+
+  function handleClick() {
+    if (saved) {
+      removeFromWatchlist(movie.id)
+    } else {
+      addToWatchlist(movie)
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      aria-label={saved ? 'Remove from watchlist' : 'Add to watchlist'}
+      aria-pressed={saved}
+      className={cn(
+        'flex items-center gap-2 rounded-sm border px-8 py-3',
+        'text-sm font-bold uppercase tracking-[0.05em] transition-all active:scale-95',
+        saved
+          ? 'border-[#8ff5ff]/40 bg-[#8ff5ff]/10 text-[#8ff5ff]'
+          : 'border-[#484849]/15 bg-transparent text-white hover:bg-[#201f21]/20',
+      )}
+    >
+      {saved ? (
+        <>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+          </svg>
+          Saved
+        </>
+      ) : (
+        <>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+          </svg>
+          + Watchlist
+        </>
+      )}
+    </button>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\components\ui\WatchlistClient.tsx ---
+
+'use client'
+
+import { useState } from 'react'
+import { useWatchlist } from '@/hooks/useWatchlist'
+import { getImageUrl } from '@/lib/tmdb'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import type { Movie } from '@/types/movie'
+
+type Filter = 'ALL' | 'MOVIES' | 'TV SERIES'
+
+export default function WatchlistClient() {
+  const { items, toggleWatchlist } = useWatchlist()
+  const [filter, setFilter] = useState<Filter>('ALL')
+
+  const filtered = items.filter((item) => {
+    if (filter === 'ALL') return true
+    if (filter === 'MOVIES') return item.media_type === 'movie' || !item.media_type
+    if (filter === 'TV SERIES') return item.media_type === 'tv'
+    return true
+  })
+
+  return (
+    <div className="mx-auto max-w-7xl">
+
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-5xl font-black tracking-tighter text-white md:text-7xl">
+          Watchlist
+        </h1>
+        <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-[#484849]">
+          {items.length} Items Saved to the Void
+        </p>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="mb-10 flex gap-2">
+        {(['ALL', 'MOVIES', 'TV SERIES'] as Filter[]).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setFilter(tab)}
+            aria-pressed={filter === tab}
+            className={cn(
+              'rounded-sm border px-4 py-1.5 text-[10px] uppercase tracking-[0.1em] transition-all',
+              filter === tab
+                ? 'border-[#8ff5ff] bg-[#8ff5ff]/10 text-[#8ff5ff]'
+                : 'border-[#484849]/15 text-[#484849] hover:border-[#484849]/40 hover:text-white',
+            )}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Empty state */}
+      {items.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-40 text-center">
+          <div className="mb-6 rounded border border-[#484849]/15 bg-[#131314] p-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#484849" strokeWidth="1" aria-hidden="true">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+            </svg>
+          </div>
+          <p className="text-xs uppercase tracking-[0.15em] text-[#484849]">
+            The Void is Empty
+          </p>
+          <p className="mt-2 text-sm text-[#484849]/60">
+            Start adding titles to your watchlist
+          </p>
+          <Link
+            href="/search"
+            className="mt-8 rounded-sm border border-[#484849]/15 bg-[#131314] px-6 py-2.5 text-xs uppercase tracking-[0.08em] text-white transition-all hover:border-[#8ff5ff]/30 hover:text-[#8ff5ff]"
+          >
+            Start Exploring
+          </Link>
+        </div>
+      )}
+
+      {/* Grid */}
+      {filtered.length > 0 && (
+        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          {filtered.map((movie) => (
+            <WatchlistCard
+              key={movie.id}
+              movie={movie}
+              onRemove={() => toggleWatchlist(movie)}
+            />
+          ))}
+
+          {/* Space for More card */}
+          <div className="flex flex-col items-center justify-center rounded border border-[#484849]/10 bg-[#131314]/40 p-8 text-center">
+            <div className="mb-4 rounded border border-[#484849]/15 bg-[#201f21] p-3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#484849" strokeWidth="1" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+              </svg>
+            </div>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-[#484849]">
+              Space for More
+            </p>
+            <p className="mt-2 text-xs text-[#484849]/60">
+              Continue your journey through the celestial library
+            </p>
+            <Link
+              href="/search"
+              className="mt-5 rounded-sm border border-[#484849]/15 bg-[#131314] px-4 py-2 text-[10px] uppercase tracking-[0.08em] text-white transition-all hover:border-[#8ff5ff]/30 hover:text-[#8ff5ff]"
+            >
+              Start Exploring
+            </Link>
+          </div>
+        </div>
+      )}
+
+    </div>
+  )
+}
+
+interface WatchlistCardProps {
+  movie: Movie
+  onRemove: () => void
+}
+
+function WatchlistCard({ movie, onRemove }: WatchlistCardProps) {
+  const poster = getImageUrl(movie.poster_path, 'w500')
+  const mediaType = movie.media_type === 'tv' ? 'Series' : 'Movie'
+
+  return (
+    <div className="group relative overflow-hidden rounded border border-[#484849]/10 bg-[#131314]">
+
+      {/* Poster */}
+      <Link href={`/movie/${movie.id}`} aria-label={`View ${movie.title || movie.name}`}>
+        <div className="aspect-[2/3] overflow-hidden">
+          <img
+            src={poster}
+            alt={movie.title || movie.name || ''}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      </Link>
+
+      {/* Remove button */}
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Remove ${movie.title || movie.name} from watchlist`}
+        className="absolute right-2 top-2 rounded-sm border border-[#484849]/15 bg-[#0e0e0f]/80 p-1.5 text-[#484849] opacity-0 backdrop-blur-sm transition-all group-hover:opacity-100 hover:border-red-500/30 hover:text-red-400"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+
+      {/* Info */}
+      <div className="p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-[9px] uppercase tracking-[0.15em] text-[#8ff5ff]">
+            {mediaType}
+          </span>
+          <div className="flex items-center gap-1">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="#8ff5ff" aria-hidden="true">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+            </svg>
+            <span className="text-[10px] text-white">
+              {movie.vote_average.toFixed(1)}
+            </span>
+          </div>
+        </div>
+        <p className="text-sm font-bold uppercase tracking-tight text-white">
+          {movie.title || movie.name}
+        </p>
+      </div>
+
+    </div>
+  )
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\hooks\useDebounce.ts ---
+
+import { useState, useEffect } from "react";
+
+export function useDebounce<T>(value: T, delay: number = 500): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\hooks\useMovieDetail.ts ---
+
+import { useQuery } from "@tanstack/react-query";
+import { getMovieDetail } from "@/lib/tmdb";
+
+export function useMovieDetail(id: number, mediaType: "movie" | "tv" = "movie") {
+  return useQuery({
+    queryKey: ["movie", id, mediaType],
+    queryFn: () => getMovieDetail(id, mediaType),
+    enabled: !!id,
+  });
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\hooks\useMovieSearch.ts ---
+
+import { useQuery } from "@tanstack/react-query";
+import { searchMovies } from "@/lib/tmdb";
+
+export function useMovieSearch(query: string, page: number = 1) {
+  return useQuery({
+    queryKey: ["search", query, page],
+    queryFn: () => searchMovies(query, page),
+    enabled: query.trim().length > 0,
+    placeholderData: (prev) => prev,
+  });
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\hooks\useWatchlist.ts ---
+
+import { useWatchlistStore } from '@/stores/watchlistStore'
+import type { Movie } from '@/types/movie'
+
+export function useWatchlist() {
+  const { items, addToWatchlist, removeFromWatchlist, isInWatchlist, clearWatchlist } =
+    useWatchlistStore()
+
+  const toggleWatchlist = (movie: Movie) => {
+    if (isInWatchlist(movie.id)) {
+      removeFromWatchlist(movie.id)
+    } else {
+      addToWatchlist(movie)
+    }
+  }
+
+  return {
+    items,
+    watchlist: items,
+    addToWatchlist,
+    removeFromWatchlist,
+    toggleWatchlist,
+    isInWatchlist,
+    clearWatchlist,
+    count: items.length,
+  }
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\lib\queryClient.ts ---
+
+import { QueryClient } from "@tanstack/react-query";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\lib\tmdb.ts ---
+
+import axios from 'axios'
+import type { Movie, MovieDetail, TMDBResponse } from '@/types/movie'
+
+const tmdb = axios.create({
+  baseURL: process.env.TMDB_BASE_URL,
+  params: {
+    api_key: process.env.TMDB_API_KEY,
+    language: 'en-US',
+  },
+})
+
+export const IMAGE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_URL
+
+export function getImageUrl(
+  path: string | null,
+  size: 'w92' | 'w300' | 'w500' | 'w780' | 'original' = 'w500'
+): string {
+  if (!path) return '/placeholder.jpg'
+  return `${IMAGE_URL}/${size}${path}`
+}
+
+export async function getTrending(): Promise<Movie[]> {
+  const { data } = await tmdb.get<TMDBResponse<Movie>>('/trending/all/week')
+  return data.results
+}
+
+export async function searchMovies(
+  query: string,
+  page: number = 1,
+  filters?: {
+    genreId?: string
+    year?: string
+    sort?: string
+    rating?: string
+  }
+): Promise<Movie[]> {
+  if (query) {
+    const { data } = await tmdb.get<TMDBResponse<Movie>>('/search/multi', {
+      params: { query, page, include_adult: false },
+    })
+
+    let results = data.results
+
+    if (filters?.rating) {
+      const minRating = parseFloat(filters.rating.replace('+', ''))
+      results = results.filter((m) => m.vote_average >= minRating)
+    }
+
+    if (filters?.year) {
+      results = results.filter((m) => {
+        const releaseYear = m.release_date
+          ? new Date(m.release_date).getFullYear().toString()
+          : m.first_air_date
+          ? new Date(m.first_air_date).getFullYear().toString()
+          : ''
+        return releaseYear === filters.year
+      })
+    }
+
+    if (filters?.genreId) {
+      results = results.filter((m) =>
+        m.genre_ids?.includes(Number(filters.genreId))
+      )
+    }
+
+    if (filters?.sort) {
+      results = [...results].sort((a, b) => {
+        switch (filters.sort) {
+          case 'vote_average.desc':
+            return b.vote_average - a.vote_average
+          case 'release_date.desc':
+            return new Date(b.release_date || b.first_air_date || '').getTime() -
+                   new Date(a.release_date || a.first_air_date || '').getTime()
+          case 'release_date.asc':
+            return new Date(a.release_date || a.first_air_date || '').getTime() -
+                   new Date(b.release_date || b.first_air_date || '').getTime()
+          case 'popularity.desc':
+          default:
+            return b.popularity - a.popularity
+        }
+      })
+    }
+
+    return results
+  }
+
+  const minRating = filters?.rating
+    ? parseFloat(filters.rating.replace('+', ''))
+    : undefined
+
+  const { data } = await tmdb.get<TMDBResponse<Movie>>('/discover/movie', {
+    params: {
+      sort_by: filters?.sort ?? 'popularity.desc',
+      with_genres: filters?.genreId || undefined,
+      primary_release_year: filters?.year || undefined,
+      'vote_average.gte': minRating,
+      page,
+    },
+  })
+  return data.results
+}
+
+export async function getMovieDetail(
+  id: number,
+  mediaType: 'movie' | 'tv' = 'movie'
+): Promise<MovieDetail> {
+  const { data } = await tmdb.get<MovieDetail>(`/${mediaType}/${id}`, {
+    params: { append_to_response: 'credits,videos' },
+  })
+  return data
+}
+
+export async function getMoviesByGenre(
+  genreId: number,
+  page: number = 1
+): Promise<TMDBResponse<Movie>> {
+  const { data } = await tmdb.get<TMDBResponse<Movie>>('/discover/movie', {
+    params: {
+      with_genres: genreId,
+      sort_by: 'popularity.desc',
+      page,
+    },
+  })
+  return data
+}
+
+export async function getGenres(): Promise<{ id: number; name: string }[]> {
+  const { data } = await tmdb.get<{ genres: { id: number; name: string }[] }>(
+    '/genre/movie/list'
+  )
+  return data.genres
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\lib\utils.ts ---
+
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\stores\watchlistStore.ts ---
+
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { Movie } from "@/types/movie";
+
+interface WatchlistState {
+  items: Movie[];
+  addToWatchlist: (movie: Movie) => void;
+  removeFromWatchlist: (id: number) => void;
+  isInWatchlist: (id: number) => boolean;
+  clearWatchlist: () => void;
+}
+
+export const useWatchlistStore = create<WatchlistState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+
+      addToWatchlist: (movie) => {
+        const already = get().isInWatchlist(movie.id);
+        if (already) return;
+        set((state) => ({ items: [...state.items, movie] }));
+      },
+
+      removeFromWatchlist: (id) => {
+        set((state) => ({
+          items: state.items.filter((m) => m.id !== id),
+        }));
+      },
+
+      isInWatchlist: (id) => {
+        return get().items.some((m) => m.id === id);
+      },
+
+      clearWatchlist: () => set({ items: [] }),
+    }),
+    {
+      name: "voidscope-watchlist",
+    }
+  )
+);
+
+--- END FILE ---
+
+--- FILE: D:\Coding\NEXTJS\NextJSPure - Copy (2)\my-next-app\src\types\movie.ts ---
+
+export interface Movie {
+  id: number;
+  title: string;
+  name?: string; // ظ„ظ„ظ€ TV shows
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  vote_count: number;
+  release_date: string;
+  first_air_date?: string; // ظ„ظ„ظ€ TV shows
+  genre_ids: number[];
+  media_type?: "movie" | "tv";
+  popularity: number;
+  adult: boolean;
+}
+
+export interface MovieDetail extends Movie {
+  genres: Genre[];
+  runtime: number | null;
+  status: string;
+  tagline: string;
+  budget: number;
+  revenue: number;
+  production_companies: ProductionCompany[];
+  spoken_languages: SpokenLanguage[];
+  credits?: Credits;
+  videos?: VideoResults;
+}
+
+export interface Genre {
+  id: number;
+  name: string;
+}
+
+export interface ProductionCompany {
+  id: number;
+  name: string;
+  logo_path: string | null;
+}
+
+export interface SpokenLanguage {
+  english_name: string;
+  iso_639_1: string;
+}
+
+export interface Credits {
+  cast: CastMember[];
+  crew: CrewMember[];
+}
+
+export interface CastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
+  order: number;
+}
+
+export interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  department: string;
+  profile_path: string | null;
+}
+
+export interface VideoResults {
+  results: Video[];
+}
+
+export interface Video {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+}
+
+export interface TMDBResponse<T> {
+  page: number;
+  results: T[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface SearchFilters {
+  query: string;
+  genre?: number;
+  year?: number;
+  sortBy?: "popularity.desc" | "vote_average.desc" | "release_date.desc";
+  mediaType?: "movie" | "tv" | "all";
+}
+
+--- END FILE ---
+
