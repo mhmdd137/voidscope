@@ -4,6 +4,7 @@ import MovieGrid from "@/components/ui/MovieGrid";
 import Link from "next/link";
 import type { Movie } from "@/types/movie";
 import WatchlistBtn from "@/components/ui/WatchlistBtn";
+export const revalidate = 3600;
 
 export default async function Home() {
   const trending = await getTrending();
