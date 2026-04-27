@@ -1,16 +1,16 @@
 export interface Movie {
   id: number;
   title: string;
-  name?: string; // للـ TV shows
+  name?: string; // TV shows
   overview: string;
   poster_path: string | null;
   backdrop_path: string | null;
   vote_average: number;
   vote_count: number;
   release_date: string;
-  first_air_date?: string; // للـ TV shows
+  first_air_date?: string; // TV shows
   genre_ids: number[];
-  media_type?: "movie" | "tv";
+  media_type?: 'movie' | 'tv';
   popularity: number;
   adult: boolean;
 }
@@ -18,6 +18,8 @@ export interface Movie {
 export interface MovieDetail extends Movie {
   genres: Genre[];
   runtime: number | null;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
   status: string;
   tagline: string;
   budget: number;
@@ -85,10 +87,43 @@ export interface TMDBResponse<T> {
   total_results: number;
 }
 
+// ── Filter system ─────────────────────────────────────────────────────────────
+
+export type MediaType = 'movie' | 'tv';
+
+export type SortOption =
+  | 'popularity.desc'
+  | 'popularity.asc'
+  | 'vote_average.desc'
+  | 'vote_average.asc'
+  | 'release_date.desc'
+  | 'release_date.asc';
+
+export interface ActiveFilters {
+  mediaType: MediaType;
+  genreId: string;
+  rating: string;
+  year: string;
+  sort: SortOption;
+}
+
+/** Params forwarded directly to TMDB /discover endpoint */
+export interface DiscoverParams {
+  mediaType: MediaType;
+  sort_by?: SortOption;
+  with_genres?: string;
+  /** movie: primary_release_year  |  tv: first_air_date_year */
+  year?: string;
+  'vote_average.gte'?: number;
+  page?: number;
+}
+
+/** Legacy alias kept for backwards compat */
 export interface SearchFilters {
   query: string;
-  genre?: number;
-  year?: number;
-  sortBy?: "popularity.desc" | "vote_average.desc" | "release_date.desc";
-  mediaType?: "movie" | "tv" | "all";
+  mediaType: MediaType;
+  genreId?: string;
+  year?: string;
+  rating?: string;
+  sort?: SortOption;
 }

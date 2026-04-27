@@ -87,4 +87,26 @@
   .btn-primary-glow:hover {
     box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 30%, transparent);
   }
+
+  /* Shared style for all filter <select> dropdowns */
+  .filter-select {
+    background-color: var(--color-surface-container);
+    color: var(--color-on-surface);
+    border-color: color-mix(in srgb, var(--color-outline-variant) 25%, transparent);
+    min-width: 9rem;
+  }
+
+  .filter-select option {
+    background-color: var(--color-surface-container-highest);
+    color: var(--color-on-surface);
+  }
+
+  /* Thin webkit scrollbar to match dark theme */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-surface); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-outline-variant);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-outline); }
 }
